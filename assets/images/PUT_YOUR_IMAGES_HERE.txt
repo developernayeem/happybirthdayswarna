@@ -1,0 +1,1 @@
+Put lock-icon.png, panda-loading.gif, panda-sleeping.gif, dancing.gif, memory1.jpg-memory5.jpg, profile.jpg here. See README.md for details.
