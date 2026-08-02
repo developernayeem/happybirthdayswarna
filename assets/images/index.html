@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>Happy Birthday Swarna 💙</title>
+<link rel="icon" type="image/svg+xml" href="assets/images/favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="phone-frame">
+
+  <!-- ===================== SCREEN 1: LOCK SCREEN ===================== -->
+  <section id="screen-lock" class="screen active">
+    <div class="lock-wrap">
+      <div class="glow-ring-wrap breathe">
+        <span class="ring-extra"></span>
+        <button class="avatar-btn" id="lockIconBtn" aria-label="Click to unlock">
+          <img src="assets/images/lock-icon.png" alt="" class="avatar-img" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="avatar-fallback">🔒</div>
+        </button>
+      </div>
+      <h2 class="locked-title">LOCKED</h2>
+      <p class="lock-text blink-text">Click on picture above to reveal passkey entry</p>
+    </div>
+  </section>
+
+  <!-- ===================== PIN MODAL ===================== -->
+  <div id="pinModal" class="modal-overlay">
+    <div class="pin-card">
+      <button class="close-btn" id="closePinModal" aria-label="Close">✕</button>
+      <div class="pin-image">
+        <img src="assets/images/lock-icon.png" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="avatar-fallback big">🔒</div>
+      </div>
+      <p class="pin-title">Enter Passkey</p>
+      <div class="pin-dots" id="pinDots">
+        <span class="dot"></span><span class="dot"></span><span class="dot"></span><span class="dot"></span>
+      </div>
+      <div class="keypad">
+        <button class="key" data-key="1">1</button>
+        <button class="key" data-key="2">2</button>
+        <button class="key" data-key="3">3</button>
+        <button class="key" data-key="4">4</button>
+        <button class="key" data-key="5">5</button>
+        <button class="key" data-key="6">6</button>
+        <button class="key" data-key="7">7</button>
+        <button class="key" data-key="8">8</button>
+        <button class="key" data-key="9">9</button>
+        <button class="key key-ghost"></button>
+        <button class="key" data-key="0">0</button>
+        <button class="key key-del" id="pinDelete">⌫</button>
+      </div>
+      <p class="modal-hint">Hint: click on the image again if you forget the passkey</p>
+    </div>
+  </div>
+
+  <!-- ===================== SCREEN 2: LOADING ===================== -->
+  <section id="screen-loading" class="screen">
+    <div class="loading-wrap">
+      <div class="gif-plain">
+        <img src="assets/images/panda-loading.gif" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+        <div class="avatar-fallback big">🐼</div>
+      </div>
+      <p class="loading-text">Loading something special<span class="dots"><span>.</span><span>.</span><span>.</span></span></p>
+      <p class="loading-sub">just for you</p>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN 3: WELCOME ===================== -->
+  <section id="screen-welcome" class="screen">
+    <div class="welcome-wrap">
+      <h1 class="script-title">It's Your Special Day</h1>
+      <div class="glow-ring-wrap float">
+        <span class="ring-extra"></span>
+        <div class="panda-circle">
+          <img src="assets/images/panda-sleeping.gif" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="avatar-fallback big">🐼💤</div>
+        </div>
+      </div>
+      <p class="welcome-msg">I made something special for you</p>
+      <button class="btn-main btn-glow sparkle-btn" id="startBtn">
+        <span>Start</span>
+        <i class="spark s1">✦</i><i class="spark s2">✧</i><i class="spark s3">✦</i>
+      </button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN 4: AGE COUNT ===================== -->
+  <section id="screen-age" class="screen">
+    <div class="age-wrap">
+      <div class="glow-ring-wrap float">
+        <span class="ring-extra"></span>
+        <div class="panda-circle">
+          <img src="assets/images/dancing.gif" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="avatar-fallback big">💃</div>
+        </div>
+      </div>
+      <h1 class="script-title small">Happy Birthday My Beautiful Best Friend</h1>
+      <p class="age-question">Have you completed...</p>
+      <div class="age-counter" id="ageCounter">
+        <div class="age-circle"><span id="ageYears">0</span><label>Years</label></div>
+        <div class="age-circle"><span id="ageMonths">0</span><label>Months</label></div>
+        <div class="age-circle"><span id="ageDays">0</span><label>Days</label></div>
+      </div>
+      <button class="btn-main btn-glow" id="toMemoriesBtn">Next</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN 5: MEMORIES ===================== -->
+  <section id="screen-memories" class="screen">
+    <div class="memories-wrap">
+      <h1 class="script-title small">Special Memories</h1>
+      <p class="swipe-hint">← swipe for more →</p>
+      <div class="memories-scroll" id="memoriesScroll">
+        <div class="memory-card"><img src="assets/images/memory1.jpg" alt="" onerror="this.parentElement.classList.add('empty')"></div>
+        <div class="memory-card"><img src="assets/images/memory2.jpg" alt="" onerror="this.parentElement.classList.add('empty')"></div>
+        <div class="memory-card"><img src="assets/images/memory3.jpg" alt="" onerror="this.parentElement.classList.add('empty')"></div>
+        <div class="memory-card"><img src="assets/images/memory4.jpg" alt="" onerror="this.parentElement.classList.add('empty')"></div>
+        <div class="memory-card"><img src="assets/images/memory5.jpg" alt="" onerror="this.parentElement.classList.add('empty')"></div>
+      </div>
+      <button class="btn-main btn-glow" id="toLetterBtn">Message 💌</button>
+    </div>
+  </section>
+
+  <!-- ===================== SCREEN 6: LETTER ===================== -->
+  <section id="screen-letter" class="screen">
+    <div class="letter-wrap">
+      <h1 class="script-title small">A Letter Just For You</h1>
+      <p class="letter-instructions">Tap the envelope to open it</p>
+      <button class="envelope" id="envelopeBtn" aria-label="Open letter">
+        <div class="envelope-back"></div>
+        <div class="envelope-letter-peek">💌</div>
+        <div class="envelope-flap"></div>
+        <div class="envelope-front"></div>
+        <div class="envelope-seal">💙</div>
+      </button>
+      <p class="tap-hint">tap to open</p>
+    </div>
+  </section>
+
+  <!-- ===================== LETTER MODAL ===================== -->
+  <div id="letterModal" class="modal-overlay">
+    <div class="letter-card">
+      <button class="close-btn" id="closeLetterModal" aria-label="Close">✕</button>
+      <p class="letter-title">Just For You</p>
+      <p class="letter-signoff-top">From my heart to you 💙</p>
+      <div class="letter-body" id="letterBody">
+        <p id="letterTyped"></p>
+      </div>
+      <button class="btn-main btn-glow" id="toCakeBtn">Let's Celebrate 🎉</button>
+    </div>
+  </div>
+
+  <!-- ===================== SCREEN 7: CAKE / CELEBRATION ===================== -->
+  <section id="screen-cake" class="screen">
+    <div class="cake-room">
+      <div class="balloons">
+        <span class="balloon b1"></span><span class="balloon b2"></span>
+        <span class="balloon b3"></span><span class="balloon b4"></span>
+        <span class="balloon b5"></span>
+      </div>
+      <canvas id="confettiCanvas"></canvas>
+
+      <div class="glow-ring-wrap">
+        <span class="ring-extra"></span>
+        <div class="panda-circle small-top">
+          <img src="assets/images/profile.jpg" alt="" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+          <div class="avatar-fallback">💙</div>
+        </div>
+      </div>
+
+      <div class="cake-scene">
+        <div class="cake" id="cakeEl">
+          <div class="candle-row" id="candleRow">
+            <div class="candle"><span class="flame"></span></div>
+            <div class="candle"><span class="flame"></span></div>
+            <div class="candle"><span class="flame"></span></div>
+          </div>
+          <div class="cream-drip"></div>
+          <div class="cake-name">Swarna</div>
+          <div class="cake-tier tier-top"></div>
+          <div class="cake-tier tier-mid"></div>
+          <div class="cake-tier tier-bottom"></div>
+          <div class="knife" id="knifeEl">🔪</div>
+        </div>
+      </div>
+
+      <button class="btn-main btn-glow cake-btn" id="cutCakeBtn">Cut the Cake 🎂</button>
+      <button class="btn-ghost" id="restartBtn">Restart ↺</button>
+
+      <p class="footer-msg">Happy Birthday my sweet best friend, Swarna 💙</p>
+    </div>
+  </section>
+
+</div>
+
+<!-- Audio elements -->
+<audio id="keySound" src="assets/audio/click.mp3" preload="auto"></audio>
+<audio id="popSound" src="assets/audio/pop.mp3" preload="auto"></audio>
+<audio id="bgSong1" src="assets/audio/song1.mp3" loop preload="auto"></audio>
+<audio id="bgSong2" src="assets/audio/song2.mp3" loop preload="auto"></audio>
+
+<script src="js/script.js"></script>
+</body>
+</html>
