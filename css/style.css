@@ -1,0 +1,718 @@
+/* ============================================================
+   DESIGN TOKENS
+   ============================================================ */
+:root{
+  --lavender:   #CDB4DB; /* accent */
+  --pink-blush: #FFC8DD; /* light pink */
+  --pink-hover: #FFAFCC; /* pink */
+  --sky-soft:   #A2D2FF; /* blue */
+  --blue-light: #BDE0FE; /* light blue */
+  --sky-deep:   #6A4C93; /* deep purple — anchors the background */
+  --white:      #FFFFFF;
+  --navy:       #1B2A4A;
+  --slate:      #5C6B84;
+  --gold:       #FFD700;
+
+  --font-display: 'Pacifico', cursive;
+  --font-body: 'Poppins', sans-serif;
+
+  --radius-lg: 28px;
+  --radius-md: 18px;
+  --shadow-soft: 0 12px 30px rgba(27,42,74,0.18);
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  margin:0; padding:0;
+  width:100%; height:100%;
+  position:fixed; inset:0;
+  overflow:hidden;
+  overscroll-behavior:none;
+  touch-action:pan-y;
+  font-family: var(--font-body);
+  color: var(--navy);
+  -webkit-tap-highlight-color: transparent;
+}
+
+body{
+  background: linear-gradient(135deg, var(--sky-deep), var(--sky-soft) 55%, var(--pink-blush));
+  display:flex;
+  justify-content:center;
+  align-items:center;
+}
+
+button{ font-family: var(--font-body); cursor:pointer; border:none; background:none; }
+img{ -webkit-user-drag:none; user-select:none; }
+
+/* ============================================================
+   PHONE FRAME — the whole experience lives in a mobile-width card
+   ============================================================ */
+.phone-frame{
+  position:relative;
+  width:100%;
+  max-width:460px;
+  height:100%;
+  overflow:hidden;
+  background: linear-gradient(160deg, var(--sky-deep), var(--sky-soft) 50%, var(--pink-blush));
+}
+
+@media (min-width:520px){
+  .phone-frame{
+    height:92vh;
+    max-height:900px;
+    margin:16px 0;
+    border-radius:36px;
+    box-shadow: var(--shadow-soft);
+  }
+}
+
+/* ============================================================
+   SCREENS — one visible at a time
+   ============================================================ */
+.screen{
+  position:absolute; inset:0;
+  display:none;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  text-align:center;
+  padding:32px 24px;
+  overflow-y:auto;
+}
+.screen.active{ display:flex; }
+.screen.fade-in{ animation: fadeIn .55s ease both; }
+#screen-cake{ padding:0; }
+
+@keyframes fadeIn{
+  from{ opacity:0; transform: translateY(14px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+
+/* ============================================================
+   SHARED: rounded avatar / icon circles with image+emoji fallback
+   ============================================================ */
+.avatar-btn{ padding:0; }
+.avatar-img, .panda-circle img{
+  width:100%; height:100%; object-fit:cover; display:block;
+}
+.avatar-fallback{
+  position:absolute; inset:0;
+  display:none;
+  align-items:center; justify-content:center;
+  font-size:52px;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #eaf4ff 60%, #d9ecff);
+}
+.avatar-fallback.big{ font-size:64px; }
+
+.lock-wrap{ display:flex; flex-direction:column; align-items:center; justify-content:center; }
+.lock-wrap .avatar-btn{
+  position:relative;
+  width:140px; height:140px; border-radius:50%;
+  overflow:hidden;
+  box-shadow: 0 10px 26px rgba(27,42,74,0.28);
+  border:4px solid rgba(255,255,255,0.85);
+  transition: transform .25s ease;
+}
+.lock-wrap .avatar-btn:active{ transform: scale(0.94); }
+
+.locked-title{
+  margin:20px 0 6px; font-family: var(--font-body); font-weight:700;
+  font-size:22px; letter-spacing:.14em; color: var(--navy);
+}
+
+.lock-text{
+  margin-top:2px; font-weight:600; font-size:14px;
+  color: var(--navy); max-width:260px;
+}
+.blink-text{ animation: textBlink 2.2s ease-in-out infinite; }
+@keyframes textBlink{
+  0%,100%{ opacity:1; }
+  50%{ opacity:.35; }
+}
+
+/* ============================================================
+   GLOW RING WRAP — pulsing concentric ripple rings (reusable)
+   ============================================================ */
+.glow-ring-wrap{
+  position:relative;
+  display:inline-flex; align-items:center; justify-content:center;
+  margin-bottom:18px;
+}
+.glow-ring-wrap::before, .glow-ring-wrap::after{
+  content:""; position:absolute; inset:-5px;
+  border-radius:50%;
+  border: 2px solid var(--sky-deep);
+  opacity:0;
+  animation: ringPulse 3.6s ease-out infinite;
+  pointer-events:none;
+}
+.glow-ring-wrap::after{ animation-delay: 1.8s; }
+.glow-ring-wrap .ring-extra{
+  content:""; position:absolute; inset:-5px;
+  border-radius:50%;
+  border: 2px solid var(--sky-deep);
+  opacity:0;
+  animation: ringPulse 3.6s ease-out infinite;
+  animation-delay: 3.6s;
+  pointer-events:none;
+}
+@keyframes ringPulse{
+  0%{ transform: scale(0.94); opacity:.55; }
+  70%{ opacity:.12; }
+  100%{ transform: scale(1.22); opacity:0; }
+}
+.glow-ring-wrap.breathe > .avatar-btn{ animation: breathe 3.2s ease-in-out infinite; }
+/* box itself stays fixed in place — only the gif inside it moves (see .gif-inner) */
+@keyframes breathe{
+  0%,100%{ transform: scale(1); }
+  50%{ transform: scale(1.05); }
+}
+
+.panda-circle{
+  position:relative;
+  width:120px; height:120px; border-radius:50%;
+  overflow:hidden; margin:0 auto; flex-shrink:0;
+  border:4px solid var(--white);
+  box-shadow: var(--shadow-soft);
+  display:flex; align-items:center; justify-content:center;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #eaf4ff 60%, #d9ecff);
+}
+.panda-circle.small-top{ width:78px; height:78px; cursor:pointer; }
+
+.gif-inner{
+  position:relative;
+  width:86%; height:86%; border-radius:50%; overflow:hidden;
+  animation: gifMotion 3.6s ease-in-out infinite;
+}
+@keyframes gifMotion{
+  0%,100%{ transform: translateY(0) scale(1); }
+  50%{ transform: translateY(-5px) scale(1.04); }
+}
+
+@keyframes floatY{
+  0%,100%{ transform: translateY(0); }
+  50%{ transform: translateY(-9px); }
+}
+
+.gif-plain{
+  position:relative;
+  width:150px; height:150px; margin:0 auto 18px;
+  animation: breathe 2.6s ease-in-out infinite;
+}
+.gif-plain img{ width:100%; height:100%; object-fit:contain; display:block; }
+
+/* ============================================================
+   MODAL — shared overlay (pin entry + letter + reveal)
+   Smooth animated open/close, consistent across every popup
+   ============================================================ */
+.modal-overlay{
+  position:absolute; inset:0;
+  background: rgba(27,42,74,0.55);
+  backdrop-filter: blur(3px);
+  display:flex;
+  align-items:center; justify-content:center;
+  padding:20px;
+  z-index:50;
+  opacity:0; visibility:hidden; pointer-events:none;
+  transition: opacity .3s ease, visibility 0s linear .3s;
+}
+.modal-overlay.open{
+  opacity:1; visibility:visible; pointer-events:auto;
+  transition: opacity .3s ease;
+}
+
+.modal-overlay .pin-card,
+.modal-overlay .reveal-card,
+.modal-overlay .letter-card{
+  transform: scale(0.82) translateY(16px);
+  opacity:0;
+  transition: transform .38s cubic-bezier(.2,.8,.3,1.25), opacity .3s ease;
+}
+.modal-overlay.open .pin-card,
+.modal-overlay.open .reveal-card,
+.modal-overlay.open .letter-card{
+  transform: scale(1) translateY(0);
+  opacity:1;
+  transition: transform .4s cubic-bezier(.2,.9,.3,1.3) .05s, opacity .35s ease .05s;
+}
+
+.close-btn{
+  position:absolute; top:14px; right:14px;
+  width:34px; height:34px; border-radius:50%;
+  background: rgba(27,42,74,0.08);
+  color: var(--navy); font-size:16px;
+  display:flex; align-items:center; justify-content:center;
+  z-index:2;
+  transition: transform .25s cubic-bezier(.3,1.5,.4,1), background .2s ease;
+}
+.close-btn:hover{ transform: rotate(90deg) scale(1.08); background: rgba(27,42,74,0.15); }
+.close-btn:active{ transform: rotate(90deg) scale(0.9); }
+.letter-card .close-btn{
+  background: rgba(255,255,255,0.18);
+  color:#fff;
+}
+.letter-card .close-btn:hover{ background: rgba(255,255,255,0.3); }
+
+/* Passkey reveal popup — full rectangular 4:5 image, not cropped to a circle */
+.reveal-card{
+  position:relative;
+  width:100%; max-width:260px;
+  aspect-ratio: 4 / 5;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.4);
+  padding:18px;
+  display:flex; flex-direction:column; align-items:center; gap:12px;
+  overflow:hidden;
+}
+.reveal-image{
+  width:100%; flex:1; min-height:0;
+  border-radius: var(--radius-md); overflow:hidden;
+  background: radial-gradient(circle at 35% 30%, #ffffff, #eaf4ff 60%, #d9ecff);
+  border:3px solid var(--sky-soft);
+}
+.reveal-image img{ width:100%; height:100%; object-fit:contain; display:block; }
+.reveal-image .avatar-fallback{ font-size:72px; }
+.reveal-passkey{
+  font-family: var(--font-display); font-size:22px; color:var(--sky-deep);
+  margin:0;
+}
+
+/* Pin card */
+.pin-card{
+  position:relative;
+  width:100%; max-width:300px;
+  background: var(--white);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+  padding:20px 20px 16px;
+  display:flex; flex-direction:column; align-items:center;
+}
+.pin-image{
+  width:88px; height:88px; border-radius:50%; overflow:hidden;
+  border:3px solid var(--sky-soft); margin:2px 0 10px;
+  box-shadow: 0 0 0 5px rgba(162,210,255,0.35), 0 6px 16px rgba(27,42,74,0.25);
+  flex-shrink:0; cursor:pointer;
+}
+.pin-image img{ width:100%; height:100%; object-fit:cover; display:block; }
+.pin-title{ font-weight:600; margin:0 0 12px; color:var(--navy); }
+.modal-hint{
+  margin:14px 0 0; font-size:11.5px; color: rgba(27,42,74,0.6);
+  font-style:italic; text-align:center;
+}
+
+.pin-dots{ display:flex; gap:14px; margin-bottom:18px; }
+.dot{
+  width:14px; height:14px; border-radius:50%;
+  background: #E3EDF7; border:2px solid var(--sky-soft);
+  transition: all .18s ease;
+}
+.dot.filled{ background: var(--sky-deep); border-color:var(--sky-deep); transform: scale(1.1); }
+.dot.error{ background:#FF6B6B; border-color:#FF6B6B; }
+
+.pin-card.shake{ animation: shake .4s ease; }
+@keyframes shake{
+  0%,100%{ transform: translateX(0); }
+  20%{ transform: translateX(-8px); }
+  40%{ transform: translateX(8px); }
+  60%{ transform: translateX(-6px); }
+  80%{ transform: translateX(6px); }
+}
+
+.keypad{
+  display:grid; grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 56px;
+  gap:10px; width:100%;
+}
+.key{
+  height:56px; border-radius:16px;
+  background: linear-gradient(160deg, rgba(255,255,255,0.9), rgba(226,238,252,0.65));
+  box-shadow: inset 0 1px 0 rgba(255,255,255,0.9), inset 0 -3px 6px rgba(90,120,160,0.12), 0 3px 6px rgba(27,42,74,0.08);
+  border: 1px solid rgba(255,255,255,0.6);
+  font-size:19px; font-weight:600; color:var(--navy);
+  display:flex; align-items:center; justify-content:center;
+  transition: transform .1s ease, background .15s ease;
+}
+.key:active{ transform: scale(0.9); background: linear-gradient(160deg, var(--sky-soft), var(--sky-deep)); color:var(--white); }
+.key-dot{ pointer-events:none; opacity:0.85; }
+.key-del{ background: linear-gradient(160deg, #fff, #FFE0E8); font-size:16px; }
+
+/* ============================================================
+   LOADING SCREEN
+   ============================================================ */
+.loading-text{ font-weight:600; font-size:16px; margin:0; }
+.loading-sub{ color: var(--slate); font-size:13px; margin:4px 0 22px; }
+.dots span{ animation: blink 1.4s infinite; opacity:0; }
+.dots span:nth-child(2){ animation-delay:.2s; }
+.dots span:nth-child(3){ animation-delay:.4s; }
+@keyframes blink{ 0%,100%{opacity:0;} 50%{opacity:1;} }
+
+.progress-track{
+  width:200px; height:8px; border-radius:10px;
+  background: rgba(27,42,74,0.12); overflow:hidden;
+  margin:0 auto;
+}
+.progress-fill{
+  width:0%; height:100%;
+  background: linear-gradient(90deg, var(--sky-deep), var(--pink-hover));
+  border-radius:10px; transition: width .1s linear;
+}
+
+/* ============================================================
+   TITLES / TEXT
+   ============================================================ */
+.script-title{
+  font-family: var(--font-display);
+  font-size:34px; line-height:1.25; color:var(--navy);
+  margin:6px 0 18px; text-shadow: 0 2px 0 rgba(255,255,255,0.5);
+}
+.script-title.small{ font-size:26px; margin:14px 0 10px; }
+.welcome-msg{ font-size:15px; color:var(--navy); margin:0 0 26px; font-weight:500; }
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+.btn-main{
+  background: linear-gradient(135deg, var(--blue-light) 0%, var(--pink-blush) 55%, var(--lavender) 100%);
+  color:var(--navy); font-weight:700; font-size:15px; line-height:1.3;
+  padding:14px 34px; border-radius:999px;
+  border-bottom: 3px solid rgba(106,76,147,0.25);
+  border-top: 1px solid rgba(255,255,255,0.8);
+  box-shadow: 0 6px 0 rgba(106,76,147,0.15), 0 10px 18px rgba(106,76,147,0.22), inset 0 1px 0 rgba(255,255,255,0.6);
+  transition: transform .12s ease, box-shadow .12s ease;
+  position:relative; overflow:hidden;
+  display:inline-flex; align-items:center; justify-content:center;
+  min-height:48px; text-align:center;
+  animation: btnShadowPulse 2.6s ease-out infinite;
+}
+.btn-main:active{ transform: translateY(2px) scale(0.98); box-shadow: 0 3px 0 rgba(106,76,147,0.15), 0 5px 10px rgba(106,76,147,0.2); }
+
+/* Small pulsing shadow ring — expands and fades out only, no breathing back in */
+@keyframes btnShadowPulse{
+  0%{ box-shadow: 0 6px 0 rgba(106,76,147,0.15), 0 10px 18px rgba(106,76,147,0.22), 0 0 0 0 rgba(162,210,255,0.6); }
+  70%{ box-shadow: 0 6px 0 rgba(106,76,147,0.15), 0 10px 18px rgba(106,76,147,0.22), 0 0 0 9px rgba(162,210,255,0); }
+  100%{ box-shadow: 0 6px 0 rgba(106,76,147,0.15), 0 10px 18px rgba(106,76,147,0.22), 0 0 0 9px rgba(162,210,255,0); }
+}
+
+/* Subtle glossy flash sweep — present on every button */
+.btn-main::after{
+  content:"";
+  position:absolute; top:0; left:-60%;
+  width:40%; height:100%;
+  background: linear-gradient(115deg, transparent, rgba(255,255,255,0.75), transparent);
+  transform: skewX(-22deg);
+  animation: flashSweep 4.2s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes flashSweep{
+  0%{ left:-60%; }
+  45%{ left:130%; }
+  100%{ left:130%; }
+}
+
+/* Restart button — kept as its own distinct, quieter style (not matching the main buttons) */
+.btn-ghost{
+  margin-top:12px; color: var(--navy); font-weight:600; font-size:13px;
+  text-decoration: underline; opacity:0.8; background:none; border:none;
+  padding:6px 10px;
+}
+
+.sparkle-btn{ position:relative; }
+.spark{
+  position:absolute; color:var(--gold); font-size:14px;
+  animation: sparkle 1.6s ease-in-out infinite;
+}
+.spark.s1{ top:-4px; left:6px; animation-delay:0s; }
+.spark.s2{ top:50%; right:-2px; animation-delay:.4s; }
+.spark.s3{ bottom:-6px; left:40%; animation-delay:.8s; }
+@keyframes sparkle{
+  0%,100%{ opacity:0; transform: scale(0.6) rotate(0deg); }
+  50%{ opacity:1; transform: scale(1.15) rotate(20deg); }
+}
+
+/* ============================================================
+   AGE SCREEN
+   ============================================================ */
+.age-question{ font-weight:500; margin:6px 0 14px; }
+.age-counter{ display:flex; justify-content:center; align-items:center; gap:16px; margin-bottom:26px; width:100%; }
+.age-circle{
+  width:86px; height:86px; border-radius:50%;
+  background: linear-gradient(160deg, rgba(255,255,255,0.95), rgba(189,224,254,0.55) 60%, rgba(255,255,255,0.4));
+  display:flex; flex-direction:column; align-items:center; justify-content:center;
+  box-shadow: inset 0 2px 4px rgba(255,255,255,0.9), inset 0 -6px 10px rgba(106,76,147,0.15), 0 8px 18px rgba(27,42,74,0.2);
+  border:1px solid rgba(255,255,255,0.7);
+}
+.age-circle span{
+  display:block; font-size:26px; font-weight:800; line-height:1.1;
+  background: linear-gradient(160deg, var(--sky-deep), #a26bc4);
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  text-shadow: 0 1px 0 rgba(255,255,255,0.4);
+}
+.age-circle label{ font-size:10px; color:var(--slate); font-weight:600; letter-spacing:.03em; margin-top:2px; }
+
+/* ============================================================
+   MEMORIES SCREEN
+   ============================================================ */
+.swipe-hint{ font-size:12.5px; color: var(--slate); margin:0 0 16px; }
+.memories-scroll{
+  display:flex; gap:14px; overflow-x:auto;
+  scroll-snap-type:x mandatory; padding:6px 4px 20px;
+  width:100%; -webkit-overflow-scrolling:touch;
+}
+.memories-scroll::-webkit-scrollbar{ height:5px; }
+.memories-scroll::-webkit-scrollbar-thumb{ background: rgba(27,42,74,0.25); border-radius:10px; }
+
+.memory-card{
+  flex:0 0 78%; scroll-snap-align:center;
+  aspect-ratio: 4/5; border-radius: var(--radius-md);
+  overflow:hidden; box-shadow: var(--shadow-soft);
+  background: linear-gradient(135deg, var(--sky-soft), var(--pink-blush));
+  display:flex; align-items:center; justify-content:center;
+}
+.memory-card img{ width:100%; height:100%; object-fit:cover; }
+.memory-card.empty::after{
+  content:"📷"; font-size:40px; opacity:.7;
+}
+.memory-card.empty img{ display:none; }
+
+/* ============================================================
+   LETTER SCREEN + ENVELOPE
+   ============================================================ */
+.letter-instructions{ font-size:13.5px; color:var(--slate); margin:0 0 26px; }
+.envelope{
+  width:200px; height:130px; position:relative;
+  perspective: 600px;
+}
+.envelope-back, .envelope-front{
+  position:absolute; inset:0; border-radius:10px;
+}
+.envelope-back{ background: linear-gradient(135deg,#fff,#eaf3ff); box-shadow: var(--shadow-soft); }
+.envelope-front{
+  background: var(--white);
+  clip-path: polygon(0 0, 50% 45%, 100% 0, 100% 100%, 0 100%);
+  z-index:2;
+}
+.envelope-flap{
+  position:absolute; top:0; left:0; width:100%; height:65%;
+  background: linear-gradient(135deg, var(--sky-soft), var(--pink-blush));
+  clip-path: polygon(0 0, 100% 0, 50% 80%);
+  transform-origin: top;
+  transition: transform .5s ease;
+  z-index:3;
+  border-radius:10px 10px 0 0;
+}
+.envelope-seal{
+  position:absolute; top:38%; left:50%; transform:translate(-50%,-50%);
+  font-size:22px; z-index:4;
+}
+.envelope.opened .envelope-flap{ transform: rotateX(180deg); }
+.tap-hint-inside{
+  position:absolute; bottom:14px; left:0; right:0;
+  margin:0; text-align:center;
+  font-size:11.5px; font-weight:600; color: rgba(27,42,74,0.55);
+  z-index:2; pointer-events:none;
+}
+.envelope.opened .tap-hint-inside{ opacity:0; }
+
+.envelope-letter-peek{
+  position:absolute; top:0; left:50%; transform: translate(-50%, 0) scale(0.75) rotate(0deg);
+  width:72%; height:62%;
+  background: linear-gradient(180deg, #fffef9, #fff);
+  border-radius:8px;
+  box-shadow: 0 10px 22px rgba(27,42,74,0.35);
+  display:flex; align-items:flex-start; justify-content:center;
+  padding-top:12px; font-size:24px;
+  opacity:0; z-index:5;
+  transition: transform .6s cubic-bezier(.2,.8,.3,1.25), opacity .45s ease;
+}
+.envelope.opened .envelope-letter-peek{
+  transform: translate(-50%, -98px) scale(1) rotate(-3deg);
+  opacity:1;
+}
+
+.typing-cursor{ display:inline-block; width:2px; background:#fff; margin-left:2px; animation: cursorBlink .8s steps(1) infinite; }
+@keyframes cursorBlink{ 50%{ opacity:0; } }
+
+/* Letter modal card — deep glossy tone */
+.letter-card{
+  position:relative; width:100%; max-width:340px; max-height:82vh;
+  background: linear-gradient(165deg, #7c5aa8 0%, var(--sky-deep) 55%, #5a4080 100%);
+  border-radius: var(--radius-lg);
+  padding:32px 24px 26px;
+  box-shadow: 0 24px 55px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.25);
+  display:flex; flex-direction:column;
+  overflow:hidden;
+}
+.letter-card::before{
+  content:"";
+  position:absolute; top:-40%; left:-20%; width:140%; height:70%;
+  background: linear-gradient(180deg, rgba(255,255,255,0.18), transparent);
+  transform: rotate(-6deg);
+  pointer-events:none;
+}
+.letter-title{ font-family: var(--font-display); font-size:26px; margin:0 0 2px; color:#fff; text-shadow: 0 2px 6px rgba(0,0,0,0.25); }
+.letter-signoff-top{ font-size:12px; color: rgba(255,255,255,0.75); margin:0 0 16px; letter-spacing:.02em; }
+.letter-body{
+  overflow-y:auto; text-align:left; font-size:14px; line-height:1.85;
+  color: rgba(255,255,255,0.94); margin-bottom:18px; max-height:44vh; padding-right:4px;
+  letter-spacing:.01em; position:relative;
+}
+.letter-body p{ margin:0 0 12px; white-space:pre-line; }
+.letter-final{ font-family: var(--font-display); font-size:19px; color:var(--gold); }
+
+/* ============================================================
+   CAKE / CELEBRATION SCREEN
+   ============================================================ */
+.cake-room{
+  position:relative; width:100%; height:100%;
+  display:flex; flex-direction:column; align-items:center; justify-content:space-evenly;
+  padding:28px 20px; overflow-y:auto; overflow-x:hidden;
+  background:
+    radial-gradient(circle at 20% 15%, rgba(255,255,255,.5), transparent 40%),
+    linear-gradient(180deg, var(--sky-deep), var(--sky-soft) 45%, var(--pink-blush));
+}
+
+
+.balloons{ position:absolute; inset:0; overflow:hidden; pointer-events:none; }
+.balloon{
+  position:absolute; bottom:-140px; width:46px; height:58px;
+  border-radius:50% 50% 50% 50% / 60% 60% 40% 40%;
+  animation: riseUp 9s linear infinite;
+  opacity:.9;
+}
+.balloon::after{
+  content:""; position:absolute; bottom:-14px; left:50%;
+  width:2px; height:16px; background: rgba(27,42,74,0.3); transform:translateX(-50%);
+}
+.b1{ left:6%;  background: var(--pink-hover); animation-delay:0s; }
+.b2{ left:24%; background: var(--white); animation-delay:1.8s; width:38px; height:48px; }
+.b3{ left:48%; background: var(--sky-deep); animation-delay:.9s; }
+.b4{ left:70%; background: var(--gold); animation-delay:3s; width:40px; height:50px; }
+.b5{ left:86%; background: var(--pink-blush); animation-delay:4.4s; }
+@keyframes riseUp{
+  0%{ transform: translateY(0) rotate(-4deg); }
+  50%{ transform: translateY(-55vh) rotate(4deg); }
+  100%{ transform: translateY(-115vh) rotate(-4deg); }
+}
+
+.cake-panel{
+  z-index:2;
+}
+.cake-scene{ z-index:2; }
+.cake{ position:relative; width:196px; padding-top:34px; margin:0 auto; }
+
+.cake-tier{ border-radius:30px; box-shadow: 0 8px 18px rgba(27,42,74,0.25); opacity:0; }
+.tier-top{
+  width:108px; height:46px; margin:0 auto;
+  background: linear-gradient(180deg, #fff, var(--lavender));
+  border:3px solid var(--white);
+}
+.tier-mid{
+  width:150px; height:52px; margin:-8px auto 0;
+  border-radius:34px;
+  background: linear-gradient(180deg, var(--pink-blush), var(--pink-hover));
+  border:3px solid var(--white);
+}
+.tier-bottom{
+  width:196px; height:64px; margin-top:-8px;
+  border-radius:36px;
+  background: linear-gradient(180deg, var(--sky-soft), var(--sky-deep));
+  border:3px solid var(--white);
+}
+.cream-drip{
+  position:absolute; top:22px; left:50%; transform:translateX(-50%);
+  width:66px; height:16px; border-radius:0 0 50px 50px;
+  background: linear-gradient(180deg, #fff, var(--blue-light));
+  box-shadow: 0 3px 6px rgba(27,42,74,0.15);
+  opacity:0; z-index:2;
+}
+.cake-name{
+  position:absolute; top:52px; left:50%; transform:translateX(-50%);
+  font-family: var(--font-display); font-size:18px; color: var(--navy);
+  white-space:nowrap; z-index:4; opacity:0;
+}
+.candle-row{
+  position:absolute; top:-4px; left:50%; transform:translateX(-50%);
+  display:flex; gap:16px; z-index:3; opacity:0;
+}
+
+/* Cake build-up entrance: layers rise from the bottom up */
+.cake.build .tier-bottom{ animation: riseIntoPlace .55s ease-out .1s both; }
+.cake.build .tier-mid{ animation: riseIntoPlace .55s ease-out .4s both; }
+.cake.build .tier-top{ animation: riseIntoPlace .55s ease-out .7s both; }
+.cake.build .cream-drip{ animation: nameFadeIn .4s ease-out 1.05s both; }
+.cake.build .cake-name{ animation: nameFadeIn .5s ease-out 1.2s both; }
+.cake.build .candle-row{ animation: candlesDropIn .55s cubic-bezier(.3,1.4,.5,1) 1.4s both; }
+@keyframes riseIntoPlace{
+  from{ opacity:0; transform: translateY(40px); }
+  to{ opacity:1; transform: translateY(0); }
+}
+@keyframes nameFadeIn{
+  from{ opacity:0; transform: translateX(-50%) translateY(8px); }
+  to{ opacity:1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes candlesDropIn{
+  from{ opacity:0; transform: translateX(-50%) translateY(-16px); }
+  to{ opacity:1; transform: translateX(-50%) translateY(0); }
+}
+.candle{
+  width:6px; height:26px; background: linear-gradient(180deg,#fff,var(--sky-soft));
+  border-radius:3px; position:relative;
+}
+.flame{
+  position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+  width:10px; height:16px; border-radius:50% 50% 50% 50% / 65% 65% 35% 35%;
+  background: radial-gradient(circle at 50% 70%, #fff6c9, var(--gold) 60%, #ff9d3d);
+  animation: flicker 1s ease-in-out infinite alternate;
+  transition: opacity .3s ease, transform .3s ease;
+}
+@keyframes flicker{
+  0%{ transform: translateX(-50%) scale(1) rotate(-3deg); }
+  100%{ transform: translateX(-50%) scale(1.12) rotate(3deg); }
+}
+.candle-row.blown .flame{ opacity:0; transform: translateX(-50%) scale(0); }
+
+.knife{
+  position:absolute; right:-14px; bottom:26px; font-size:26px;
+  transform: rotate(35deg);
+  transition: transform .5s cubic-bezier(.4,0,.2,1);
+  z-index:5;
+}
+.knife.cutting{ transform: rotate(-10deg) translate(-90px, 10px); }
+
+.cake-slice{
+  position:absolute; right:20px; bottom:2px; width:44px; height:58px;
+  background: linear-gradient(160deg, var(--pink-blush), var(--sky-deep));
+  border:2px solid var(--white);
+  clip-path: polygon(0 100%, 100% 100%, 100% 25%);
+  opacity:0; transform: translate(0, 0) scale(0.85) rotate(0deg);
+  z-index:4;
+  transition: transform .5s cubic-bezier(.3,1.5,.4,1), opacity .3s ease;
+}
+.cake-slice.popped{
+  opacity:1;
+  transform: translate(42px, -16px) scale(1) rotate(22deg);
+}
+
+.cake-btn{ margin-top:26px; z-index:2; }
+.footer-msg{
+  margin-top:16px; margin-bottom:10px; font-family: var(--font-display);
+  font-size:17px; color: var(--navy); z-index:2; padding:0 20px;
+}
+
+/* ============================================================
+   ACCESSIBILITY / MOTION
+   ============================================================ */
+@media (prefers-reduced-motion: reduce){
+  *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+}
+
+button:focus-visible, .avatar-btn:focus-visible, .envelope:focus-visible{
+  outline: 3px solid var(--gold); outline-offset:3px;
+}
+
+#confettiCanvas{
+  position:fixed; inset:0; width:100vw; height:100vh;
+  pointer-events:none; z-index:9999;
+}
